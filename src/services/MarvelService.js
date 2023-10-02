@@ -35,3 +35,4 @@ class MarvelService {
 }
 
 export default MarvelService;
+
