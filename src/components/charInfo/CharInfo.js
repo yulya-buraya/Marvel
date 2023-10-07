@@ -1,10 +1,11 @@
 import "./charInfo.scss";
-import thor from "../../resources/img/thor.jpeg";
 import { Component } from "react";
 import MarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
 import Skeleton from "../skeleton/Skeleton";
+import PropTypes from 'prop-types';
+
 
 class CharInfo extends Component {
   state = {
@@ -38,8 +39,6 @@ class CharInfo extends Component {
       .getCharapter(charID)
       .then(this.onCharLoaded)
       .catch(this.onError);
-
-  //  this.person.name =""
   };
 
   onCharLoaded = (char) => {
@@ -119,3 +118,7 @@ const View = ({ char }) => {
   );
 };
 export default CharInfo;
+
+CharInfo.propTypes = {
+  charID:PropTypes.number
+}
