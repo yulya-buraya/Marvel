@@ -3,7 +3,7 @@ import { Component } from "react";
 import MarvelService from "../../services/MarvelService";
 import Spinner from "../spinner/Spinner";
 import ErrorMessage from "../errorMessage/ErrorMessage";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
 
 class CharList extends Component {
   state = {
@@ -15,6 +15,20 @@ class CharList extends Component {
     charEnded: false,
   };
   marvelService = new MarvelService();
+
+  itemRefs = [];
+
+  setRef = (ref) => {
+    this.itemRefs.push(ref);
+  };
+
+  focusOnItem = (id) => {
+    this.itemRefs.forEach((item) =>
+      item.classList.remove("char__item_selected")
+    );
+    this.itemRefs[id].classList.add("char__item_selected");
+    this.itemRefs[id].focus();
+  };
 
   onCharsLoaded = (newChars) => {
     let ended = false;
@@ -61,7 +75,7 @@ class CharList extends Component {
     });
   };
   renderItems(arr) {
-    const items = arr.map((item) => {
+    const items = arr.map((item, i) => {
       const imgStyle =
         item.thumbnail ===
         "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg"
@@ -69,9 +83,20 @@ class CharList extends Component {
           : { objectFit: "cover" };
       return (
         <li
+          tabIndex={0}
+          ref={this.setRef}
           key={item.id}
           className="char__item"
-          onClick={() => this.props.onCharSelected(item.id)}
+          onClick={() => {
+            this.props.onCharSelected(item.id);
+            this.focusOnItem(i);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === " " || e.key === "Enter") {
+              this.props.onCharSelected(item.id);
+              this.focusOnItem(i);
+            }
+          }}
         >
           <img src={item.thumbnail} alt={item.name} style={imgStyle} />
           <div className="char__name">{item.name}</div>
@@ -106,8 +131,8 @@ class CharList extends Component {
     );
   }
 }
- CharList.propsType = {
- onCharSelected: PropTypes.func.isRequired
- }
+CharList.propsType = {
+  onCharSelected: PropTypes.func.isRequired,
+};
 
 export default CharList;
