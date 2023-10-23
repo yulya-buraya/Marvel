@@ -1,5 +1,5 @@
 import "./charInfo.scss";
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import useMarvelService from "../../services/MarvelService";
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import Spinner from "../spinner/Spinner";
@@ -8,27 +8,26 @@ import PropTypes from "prop-types";
 
 const CharInfo = (props) => {
   const [char, setChar] = useState(null);
- 
-  const { loading, error, getCharacter } = useMarvelService();
+
+  const { loading, error, getCharacter, clearError } = useMarvelService();
 
   useEffect(() => {
     updateChar();
   }, [props.charID]);
 
   const updateChar = () => {
+    clearError();
     const { charID } = props;
     if (!charID) {
       return;
     }
 
-   getCharacter(charID)
-    .then(char=>setChar(char))
-
+    getCharacter(charID).then(onCharLoaded);
   };
 
-  // const onCharLoaded = (char) => {
-  //   setChar(char);
-  // };
+  const onCharLoaded = (char) => {
+    setChar(char);
+  };
 
   const skeleton = char || loading || error ? null : <Skeleton />;
   const spinner = loading ? <Spinner /> : null;
