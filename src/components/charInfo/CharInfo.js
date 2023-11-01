@@ -21,7 +21,6 @@ const CharInfo = (props) => {
     if (!charID) {
       return;
     }
-
     getCharacter(charID).then(onCharLoaded);
   };
 

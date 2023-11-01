@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import Spinner from "../spinner/Spinner";
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import ErrorMessage from "../errorMessage/ErrorMessage";
 import useMarvelService from "../../services/MarvelService";
 import "./charList.scss";
@@ -54,6 +55,9 @@ const CharList = (props) => {
       }
 
       return (
+        <CSSTransition
+        timeout={400}
+        classNames="char__item">
         <li
           className="char__item"
           tabIndex={0}
@@ -73,9 +77,14 @@ const CharList = (props) => {
           <img src={item.thumbnail} alt={item.name} style={imgStyle} />
           <div className="char__name">{item.name}</div>
         </li>
+        </CSSTransition>
       );
     });
-    return <ul className="char__grid">{items}</ul>;
+    return <ul className="char__grid">
+      <TransitionGroup component={null}>
+      {items}
+      </TransitionGroup>
+      </ul>;
   }
 
   const items = renderItems(charList);
