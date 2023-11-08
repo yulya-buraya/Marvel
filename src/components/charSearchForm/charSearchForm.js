@@ -1,17 +1,16 @@
-import { useState } from "react";
-import { Formik, Field, Form, ErrorMessage as FormikErrorMessage } from "formik";
-import * as Yup from "yup";
-import { Link } from "react-router-dom";
+import {useState} from 'react';
+import { Formik, Form, Field, ErrorMessage as FormikErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import {Link} from 'react-router-dom';
 
-import useMarvelService from "../../services/MarvelService";
-import ErrorMessage from "../errorMessage/ErrorMessage";
+import useMarvelService from '../../services/MarvelService';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
-import "./charSearchForm.scss";
-import "../../style/button.scss";
+import './charSearchForm.scss';
 
-const SearchForm = () => {
+const CharSearchForm = () => {
     const [char, setChar] = useState(null);
-    const {loading, error, getCharacterByName, clearError} = useMarvelService();
+    const {getCharacterByName, clearError, process, setProcess} = useMarvelService();
 
     const onCharLoaded = (char) => {
         setChar(char);
@@ -21,10 +20,11 @@ const SearchForm = () => {
         clearError();
 
         getCharacterByName(name)
-            .then(onCharLoaded);
+            .then(onCharLoaded)
+            .then(() => setProcess('confirmed'));
     }
 
-    const errorMessage = error ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
+    const errorMessage = process === 'error' ? <div className="char__search-critical-error"><ErrorMessage /></div> : null;
     const results = !char ? null : char.length > 0 ?
                     <div className="char__search-wrapper">
                         <div className="char__search-success">There is! Visit {char[0].name} page?</div>
@@ -60,7 +60,7 @@ const SearchForm = () => {
                         <button 
                             type='submit' 
                             className="button button__main"
-                            disabled={loading}>
+                            disabled={process === 'loading'}>
                             <div className="inner">find</div>
                         </button>
                     </div>
@@ -73,4 +73,4 @@ const SearchForm = () => {
     )
 }
 
-export default SearchForm;
+export default CharSearchForm;
